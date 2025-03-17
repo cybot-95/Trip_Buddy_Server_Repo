@@ -28,8 +28,8 @@ db = firestore.client()
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # Gets Trip_Buddy_Repo path
 
 # Load Models with Absolute Path
-model = joblib.load(os.path.join(BASE_DIR, "Models", "recommendation_model.pkl"))
-places_pivot = joblib.load(os.path.join(BASE_DIR, "Models", "places_pivot.pkl"))
+model = joblib.load(os.path.join(BASE_DIR, "Model", "recommendation_model.pkl"))
+places_pivot = joblib.load(os.path.join(BASE_DIR, "Model", "places_pivot.pkl"))
 
 # Fetch Firestore data
 def fetch_firestore_data(collection_name):
