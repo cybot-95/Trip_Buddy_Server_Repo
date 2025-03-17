@@ -78,7 +78,16 @@ def get_recommendations(uid=None, place_type=None):
         filtered_places = [p for p in places if p["place_type"] == user_preference]
     else:
         filtered_places = sorted(places, key=lambda x: x.get("avg_rating", 0), reverse=True)[:5]
-        return {"recommendations": [p["name"] for p in filtered_places]}
+        return {
+            "recommendations": [
+                {
+                    "name": p["name"],
+                    "latitude": p.get("latitude"),
+                    "longitude": p.get("longitude"),
+                }
+                for p in filtered_places
+            ]
+        }
 
     if not filtered_places:
         return {"error": "No places found for the selected category."}
@@ -92,7 +101,16 @@ def get_recommendations(uid=None, place_type=None):
         return {"error": "Place not found! Try again with a different place."}
 
     dist, suggestions = model.kneighbors(places_pivot.iloc[place_index, :].values.reshape(1, -1), n_neighbors=5)
-    return {"recommendations": [places_pivot.index[i] for i in suggestions.flatten()]}
+    return {
+        "recommendations": [
+            {
+                "name": p["name"],
+                "latitude": p.get("latitude"),
+                "longitude": p.get("longitude"),
+            }
+            for p in places if p["name"] in places_pivot.index[suggestions.flatten()]
+        ]
+    }
 
 # API Endpoint
 @app.route("/recommend", methods=["GET"])
