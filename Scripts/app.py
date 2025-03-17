@@ -5,6 +5,7 @@ import numpy as np
 import firebase_admin
 from firebase_admin import credentials, firestore
 import random
+import json
 import os
 
 # Set the maximum number of CPU cores to be used for parallel processing
@@ -16,8 +17,10 @@ CORS(app)
 
 # Initialize Firebase only if not already initialized
 if not firebase_admin._apps:
-    cred = credentials.Certificate("Path to JSON Key")
+    cred_dict = json.loads(os.environ["FIREBASE_CREDENTIALS"])
+    cred = credentials.Certificate(cred_dict)
     firebase_admin.initialize_app(cred)
+
 
 # Initialize Firestore
 db = firestore.client()
