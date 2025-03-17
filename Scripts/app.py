@@ -9,7 +9,7 @@ import json
 import os
 
 # Set the maximum number of CPU cores to be used for parallel processing
-os.environ["LOKY_MAX_CPU_COUNT"] = "4"  
+os.environ["LOKY_MAX_CPU_COUNT"] = "4"
 
 # Initialize Flask App
 app = Flask(__name__)
@@ -21,13 +21,15 @@ if not firebase_admin._apps:
     cred = credentials.Certificate(cred_dict)
     firebase_admin.initialize_app(cred)
 
-
 # Initialize Firestore
 db = firestore.client()
 
-# Load Saved Model and Data
-model = joblib.load("../Model/recommendation_model.pkl")
-places_pivot = joblib.load("../Model/places_pivot.pkl")
+# Set Base Directory
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # Gets Trip_Buddy_Repo path
+
+# Load Models with Absolute Path
+model = joblib.load(os.path.join(BASE_DIR, "Models", "recommendation_model.pkl"))
+places_pivot = joblib.load(os.path.join(BASE_DIR, "Models", "places_pivot.pkl"))
 
 # Fetch Firestore data
 def fetch_firestore_data(collection_name):
@@ -47,7 +49,7 @@ def get_user_preference(uid, ratings, places):
     user_ratings = [r for r in ratings if r["uid"] == uid]
     if not user_ratings:
         return None
-    
+
     place_type_counts = {}
 
     for rating in user_ratings:
@@ -55,39 +57,27 @@ def get_user_preference(uid, ratings, places):
         place = next((p for p in places if p.get("place_id") == place_id), None)
 
         if not place:
-            print(f"Warning: Place ID {place_id} not found in places dataset.")
             continue  # Skip missing places
 
         if "place_type" not in place:
-            print(f"Warning: Place {place.get('name', 'Unknown')} does not have a place_type.")
             continue  # Skip if place_type is missing
 
         place_type = place["place_type"]
         place_type_counts[place_type] = place_type_counts.get(place_type, 0) + 1
-    
-    if not place_type_counts:
-        print(f"No valid place types found for user {uid}")
-        return None
 
-    return max(place_type_counts, key=place_type_counts.get)
+    return max(place_type_counts, key=place_type_counts.get) if place_type_counts else None
 
 # Get Recommendations
 def get_recommendations(uid=None, place_type=None):
     places, users, ratings = load_data()
-
     user_preference = get_user_preference(uid, ratings, places) if uid else None
-    print("User Preference:", user_preference)
 
     if place_type:
         filtered_places = [p for p in places if p["place_type"] == place_type]
-        print("place_type")
     elif user_preference:
         filtered_places = [p for p in places if p["place_type"] == user_preference]
-        print("user_ref")
     else:
-        # Default recommendation: Top-rated places
         filtered_places = sorted(places, key=lambda x: x.get("avg_rating", 0), reverse=True)[:5]
-        print("default_recommendation")
         return {"recommendations": [p["name"] for p in filtered_places]}
 
     if not filtered_places:
@@ -108,10 +98,8 @@ def get_recommendations(uid=None, place_type=None):
 @app.route("/recommend", methods=["GET"])
 def recommend():
     uid = request.args.get("uid")
-    place_type = request.args.get("place_type") # "tourist_attraction", "amusement_park", "museum", "zoo", "aquarium", "art_gallery", "park"
-
+    place_type = request.args.get("place_type")  # Example: "tourist_attraction", "museum", etc.
     recommendations = get_recommendations(uid=uid, place_type=place_type)
-    print(uid, place_type, recommendations)
     return jsonify(recommendations)
 
 # Health Check
@@ -121,5 +109,5 @@ def home():
 
 # Run Flask Server
 if __name__ == "__main__":
-    app.run(debug=True, host="0.0.0.0", port=5000)
-     
+    from waitress import serve
+    serve(app, host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
