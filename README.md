@@ -16,11 +16,11 @@ Check out the working web application here: [https://trip-buddy-fgpq.onrender.co
 
 Here're some of the project's best features:
 
-✔️   Collaborative Filtering
-✔️   Default Recommendations
-✔️   Error Handling
-✔️   API Health Check
-✔️   Update Data and Re-Train
+✔️   Collaborative Filtering <br>
+✔️   Default Recommendations <br>
+✔️   Error Handling <br>
+✔️   API Health Check <br>
+✔️   Update Data and Re-Train <br>
 
 <h2>🖇️ Pre-requesities </h2>
 
