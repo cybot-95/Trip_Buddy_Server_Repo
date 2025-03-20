@@ -8,27 +8,38 @@
 
 <h2>🚀 Demo</h2>
 
-[https://trip-buddy-fgpq.onrender.com/](https://trip-buddy-fgpq.onrender.com/)
+Check out the working web application here: [https://trip-buddy-fgpq.onrender.com/](https://trip-buddy-fgpq.onrender.com/)
 
   
   
-<h2>🧐 Features</h2>
+<h2>🌟 Features</h2>
 
 Here're some of the project's best features:
 
-*   Collaborative Filtering
-*   Default Recommendations
-*   Error Handling
+✔️   Collaborative Filtering
+✔️   Default Recommendations
+✔️   Error Handling
+✔️   API Health Check
+✔️   Update Data and Re-Train
 
-<h2>🛠️ Installation Steps:</h2>
+<h2>🖇️ Pre-requesities </h2>
 
-<p>1. Install Necessary Libraries</p>
+1️⃣ Setup your Firebase, visit [Google Firebase](https://console.firebase.google.com/). Make a new collection under your desired name.
+
+2️⃣ Generate a your Firebase Private Key(.JSON File), refer this [How to get my Firebase Service Account Key file](https://clemfournier.medium.com/how-to-get-my-firebase-service-account-key-file-f0ec97a21620) by Medium.
+
+3️⃣ Setup Google Maps API and obtain API key. Refer this [How to create a Google Maps API Key](https://webbuildersgroup.com/blog/how-to-create-a-google-maps-api-key) by Webbuilders.
+
+
+<h2>⚙️ Installation and Setup:</h2>
+
+<p>1️⃣ Install Necessary Libraries</p>
 
 ```
 python -r requirements.txt
 ```
 
-<p>2. Create a .env file and your Firebase Credentials</p>
+<p>2️⃣ Create a new folder <b>Key</b> and store your Firebase key file here.The file should look like this.</p>
 
 ```
 {
@@ -46,26 +57,68 @@ python -r requirements.txt
 }
 ```
 
-<p>3. Run the application</p>
+<p>3️⃣ Create a .env file in root folder and store <b>Google Maps API Key</b></p>
+
+```
+GOOGLE_MAPS_API_KEY = "YOUR MAPS API KEY HERE"
+```
+
+<p>4️⃣ Fetch places from the <b>Google Maps API</b> and display them.</p>
+
+```
+cd Places
+python places_fetch.py
+python places_display.py
+```
+<p>5️⃣ Generate </b>Users and their <b>Credentials</b>.</p>
+
+```
+cd Users
+python generate_users.py
+python user_credentials.py
+```
+
+<p>6️⃣ Generate ratings, this fetches users and places and generates random <b>Ratings</b> for places from each user.</p>
+
+```
+python generate_ratings.py
+```
+
+<p>7️⃣ Visit Firebase and verify the entries.</p>
+
+<p>8️⃣ Train and save the model</p>
+
+```
+cd Train
+python place_reco_train.py
+```
+
+<p>9️⃣ Deploy the model on local host using <b>Flask</b>.</p>
 
 ```
 python app.py
 ```
+The app will be deployed on your localhost on Port 5000 by default.
 
-  
-  
-<h2>💻 Built with</h2>
 
-Technologies used in the project:
+<h2>⛳ Verify The Run</h2>  
 
-*   Python
-*   Flask
-*   Firebase
-*   SciPy
-*   Numpy
-*   Pandas
+🔹Visit <b>Postman</b> or hit up your favourite browser and type,
+[http://127.0.0.1:5000/recommend?place_type=tourist_attraction&uid=100](http://127.0.0.1:5000/recommend?place_type=tourist_attraction&uid=100)
 
-<h2>Need Help? 🔍</h2>
-For any queries contact me @ venkyndharwad95@gmail.com
+⚠️ If ```place_type``` &  ```uid``` is not set then the app will throw default recommendation. Default value of ```place_type``` & ```uid``` is set to ```None```.  
+
+<h2> <b> 📁 Technology Stack </b> </h2>
+
+*   <b>Language & Runtime:</b> Python
+*   <b>Framework</b> Flask
+*   <b>Data Processing and Model:</b> Scikit-Learn, Pandas, NumPy
+*   <b>Database & Storage:</b> Firebase Firestore
+*   <b>APIs:</b> Google Maps API
+*   <b>Utilities:</b> Flask-CORS
+
+<h2>🔍 Need Help?</h2>
+
+Contact me here 📧, [Venky Dharwad](mailto:venkyndharwad95@gmail.com?subject=[GitHub%20Trip%20Buddy]%20Source%20Han%20Sans) 
 
 <h3>Code By Cybot-95 🤖</h3>
